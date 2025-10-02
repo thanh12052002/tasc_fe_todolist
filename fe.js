@@ -1,65 +1,113 @@
-//object dom
 const input = document.getElementById("todo-input");
 const addBtn = document.getElementById("add-btn");
 const todoList = document.getElementById("todo-list-id");
 const clearBtn = document.getElementById("clear-btn");
-//variable global
+
 let listTodo = [];
 let countId = 0;
-//
+let currentTarget = null;
 
-addBtn.addEventListener("click", handleClickAddBtn);
-
-function handleClickAddBtn(e) {
-  console.log(`đối tượng xử lý: ${e.target} - sự kiện xử lý: ${e}`);
-  addInput(input.value.trim());
+// Thêm todo mới
+addBtn.addEventListener("click", () => {
+  const value = input.value.trim();
+  if (!value) return;
+  addInput(value);
   addToListTodo();
   updateTaskCount();
+  input.value = "";
+});
+
+// Clear All
+clearBtn.addEventListener("click", () => {
+  listTodo = [];
+  addToListTodo();
+  updateTaskCount();
+});
+
+function addInput(content) {
+  listTodo.push({ id: countId++, content });
 }
-//add Input when click add button
-function addInput(inputTodo) {
-  var objectInput = {
-    id: countId++,
-    content: inputTodo,
-  };
-  listTodo.push(objectInput);
-}
-//handle render
+
 function addToListTodo() {
-  const todoHTML = listTodo
-    .map((item) => {
-      return `
-        <div class="todo-item" data-id="${item.id}">
+  todoList.innerHTML = listTodo
+    .map(
+      (item) => `
+          <div class="todo-item" data-id="${item.id}" draggable="true">
             <span>${item.content}</span>
             <button class="delete-btn">Delete</button>
-        </div>
-        `;
-    })
+          </div>
+        `
+    )
     .join("");
-  todoList.innerHTML = todoHTML;
+
+  // Thêm dragstart / dragend cho từng item
+  todoList.querySelectorAll(".todo-item").forEach((item) => {
+    item.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", item.dataset.id);
+      item.classList.add("dragging");
+    });
+    item.addEventListener("dragend", (e) => {
+      item.classList.remove("dragging");
+    });
+  });
 }
-//
+
 function updateTaskCount() {
-  let taskCount = document.getElementById("task-count");
-  let count = todoList.children.length;
+  const taskCount = document.getElementById("task-count");
+  const count = listTodo.length;
   taskCount.textContent = `You have ${count} pending task${
     count > 1 ? "s" : ""
   }`;
 }
 
-//handle delete
+// Xóa todo
 todoList.addEventListener("click", (e) => {
-  //get object target
-  const objectTarget = e.target;
-  //kiem tra class thuoc delete-btn
-  if (objectTarget.classList.contains("delete-btn")) {
-    //get id qua phan tu parent
-    const objectParent = objectTarget.closest(".todo-item");
-    let deleteId = parseInt(objectParent.dataset.id);
-    //xoa Item
-    listTodo = listTodo.filter((item) => item.id != deleteId);
-    //update DoM
-    objectParent.remove();
-    updateTaskCount();
+  if (!e.target.classList.contains("delete-btn")) return;
+  const itemDiv = e.target.closest(".todo-item");
+  const id = parseInt(itemDiv.dataset.id);
+  listTodo = listTodo.filter((item) => item.id !== id);
+  addToListTodo();
+  updateTaskCount();
+});
+
+// Drag & Drop
+todoList.addEventListener("dragover", (e) => e.preventDefault());
+
+todoList.addEventListener("dragenter", (e) => {
+  const item = e.target.closest(".todo-item");
+  if (!item) return;
+  if (currentTarget !== item) {
+    item.classList.add("active");
+    currentTarget = item;
   }
+});
+
+todoList.addEventListener("dragleave", (e) => {
+  const item = e.target.closest(".todo-item");
+  if (!item) return;
+  const related = e.relatedTarget;
+  if (related && item.contains(related)) return;
+  item.classList.remove("active");
+  if (currentTarget === item) currentTarget = null;
+});
+
+todoList.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const dropItem = e.target.closest(".todo-item");
+  if (!dropItem) return;
+
+  const draggedId = parseInt(e.dataTransfer.getData("text/plain"));
+  const dropId = parseInt(dropItem.dataset.id);
+  if (draggedId === dropId) return;
+
+  const draggedIndex = listTodo.findIndex((item) => item.id === draggedId);
+  const dropIndex = listTodo.findIndex((item) => item.id === dropId);
+  const [draggedItem] = listTodo.splice(draggedIndex, 1);
+  listTodo.splice(dropIndex, 0, draggedItem);
+
+  addToListTodo();
+  updateTaskCount();
+
+  dropItem.classList.remove("active");
+  if (currentTarget === dropItem) currentTarget = null;
 });

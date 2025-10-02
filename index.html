@@ -3,28 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Todo App</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div class="todo-app">
       <!-- Tiêu đề -->
       <h2>Todo App</h2>
-      <!-- Add your new todo -->
+
+      <!-- Add new todo -->
       <div class="input-section">
         <input type="text" id="todo-input" placeholder="Add your new todo" />
         <button id="add-btn">+</button>
       </div>
 
-      <!-- Danh sach todo -->
+      <!-- Todo list container -->
       <div class="todo-list" id="todo-list-id"></div>
 
-      <!-- footer -->
+      <!-- Footer -->
       <div class="footer">
         <span id="task-count">You have 0 pending tasks</span>
         <button id="clear-btn">Clear All</button>
       </div>
     </div>
+
+    <!-- JS -->
     <script src="./fe.js"></script>
   </body>
 </html>

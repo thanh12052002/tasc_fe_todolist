@@ -17,16 +17,18 @@ body {
 /* Khung chính */
 .todo-app {
   background: #fff;
-  width: 350px;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  width: 380px;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 /* Tiêu đề */
 .todo-app h2 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   color: #333;
+  text-align: center;
+  font-size: 1.8em;
 }
 
 /* Phần nhập todo mới */
@@ -37,21 +39,27 @@ body {
 
 .input-section input {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 5px 0 0 5px;
+  border-radius: 6px 0 0 6px;
   outline: none;
+  font-size: 1em;
 }
 
 .input-section button {
-  background: purple;
+  background: #6a11cb;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 0 5px 5px 0;
+  padding: 12px 18px;
+  border-radius: 0 6px 6px 0;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 1.2em;
   font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.input-section button:hover {
+  background-color: #2575fc;
 }
 
 /* Danh sách todo */
@@ -59,29 +67,57 @@ body {
   margin-bottom: 20px;
 }
 
+/* Todo item */
 .todo-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #f3f3f3;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 8px;
   margin-bottom: 10px;
+  cursor: grab;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
+.todo-item:active {
+  cursor: grabbing;
+}
+
+/* Khi kéo - mờ item */
+.todo-item.dragging {
+  opacity: 0.5;
+}
+
+/* Khi hover hoặc drag over */
+.todo-item.active {
+  background-color: #d0f0ff;
+  transform: scale(1.03);
+}
+
+/* Nội dung item */
 .todo-item span {
   flex: 1;
+  word-break: break-word;
+  font-size: 1em;
+  color: #333;
 }
 
-/* Nút xóa trong item */
+/* Nút xóa */
 .todo-item button {
-  background: red;
+  background: #ff4d4d;
   border: none;
   color: white;
-  padding: 5px 8px;
-  border-radius: 5px;
+  padding: 6px 10px;
+  border-radius: 6px;
   cursor: pointer;
-  display: none; /* ban đầu ẩn */
+  display: none;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+}
+
+.todo-item button:hover {
+  background-color: #e60000;
 }
 
 /* Hiện nút xóa khi hover */
@@ -98,13 +134,20 @@ body {
 
 .footer span {
   color: #555;
+  font-size: 0.95em;
 }
 
 .footer button {
-  background: purple;
+  background: #6a11cb;
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
+  padding: 7px 14px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 0.95em;
+  transition: background-color 0.2s;
+}
+
+.footer button:hover {
+  background-color: #2575fc;
 }
