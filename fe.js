@@ -73,7 +73,7 @@ function renderList(list) {
     `
     )
     .join("");
-
+  input.innerHTML = "";
   // Thêm dragstart / dragend
   todoList.querySelectorAll(".todo-item").forEach((item) => {
     item.addEventListener("dragstart", (e) => {
