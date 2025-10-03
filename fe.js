@@ -3,6 +3,9 @@ const addBtn = document.getElementById("add-btn");
 const todoList = document.getElementById("todo-list-id");
 const clearBtn = document.getElementById("clear-btn");
 
+const searchInput = document.getElementById("search-input");
+const searchBtn = document.getElementById("search-btn");
+
 let listTodo = [];
 let countId = 0;
 let currentTarget = null;
@@ -11,6 +14,15 @@ let currentTarget = null;
 addBtn.addEventListener("click", () => {
   const value = input.value.trim();
   if (!value) return;
+
+  // Validate trùng tên
+  if (
+    listTodo.some((item) => item.content.toLowerCase() === value.toLowerCase())
+  ) {
+    alert("Task name already exists!");
+    return;
+  }
+
   addInput(value);
   addToListTodo();
   updateTaskCount();
@@ -24,23 +36,45 @@ clearBtn.addEventListener("click", () => {
   updateTaskCount();
 });
 
+// Search todo
+searchBtn.addEventListener("click", () => {
+  const query = searchInput.value.trim().toLowerCase();
+
+  if (!query) {
+    // Nếu ô search rỗng thì render lại tất cả
+    renderList(listTodo);
+    return;
+  }
+
+  const filtered = listTodo.filter((item) =>
+    item.content.toLowerCase().includes(query)
+  );
+  renderList(filtered);
+});
+
+// Hàm thêm todo vào mảng
 function addInput(content) {
   listTodo.push({ id: countId++, content });
 }
 
+// Hàm render danh sách
 function addToListTodo() {
-  todoList.innerHTML = listTodo
+  renderList(listTodo);
+}
+
+function renderList(list) {
+  todoList.innerHTML = list
     .map(
       (item) => `
-          <div class="todo-item" data-id="${item.id}" draggable="true">
-            <span>${item.content}</span>
-            <button class="delete-btn">Delete</button>
-          </div>
-        `
+      <div class="todo-item" data-id="${item.id}" draggable="true">
+        <span>${item.content}</span>
+        <button class="delete-btn">Delete</button>
+      </div>
+    `
     )
     .join("");
 
-  // Thêm dragstart / dragend cho từng item
+  // Thêm dragstart / dragend
   todoList.querySelectorAll(".todo-item").forEach((item) => {
     item.addEventListener("dragstart", (e) => {
       e.dataTransfer.setData("text/plain", item.dataset.id);
@@ -52,6 +86,7 @@ function addToListTodo() {
   });
 }
 
+// Cập nhật số task
 function updateTaskCount() {
   const taskCount = document.getElementById("task-count");
   const count = listTodo.length;
